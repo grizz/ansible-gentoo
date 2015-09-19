@@ -24,7 +24,7 @@
   when: parted_is_done.stat.exists == False
   tags:
     - storage
-  
+
 - name: Set Grub BIOS
   command: "parted -s {{ main_disk }} -- set 1 bios_grub on"
   when: parted_is_done.stat.exists == False
@@ -51,12 +51,12 @@
 - command: touch /tmp/parted_is_done
 
 - name: Create Main Volume Group
-  lvg: "pvs={{ main_disk }}3 vg=main"
+  lvg: "pvs={{ main_disk }}3 vg={{ vg_name }}"
   tags:
     - storage
 
 - name: Create Swap Volume
-  lvol: "lv=swap vg=main size={{ swap_size }}"
+  lvol: "lv=swap vg={{ vg_name }} size={{ swap_size }}"
   tags:
     - storage
 
@@ -67,30 +67,49 @@
   command: vgchange -ay
 
 - name: Format Swap Volume
-  command: "mkswap /dev/mapper/main-swap"
+  command: "mkswap /dev/mapper/{{ vg_name }}-swap"
+
+- name: Create var Volume
+  lvol: lv=var vg={{ vg_name }} size={{ var_size }}
+  when: var_size != 0
+  tags:
+    - storage
 
 - name: Create root Volume
-  lvol: lv=root vg=main size=100%FREE
+  lvol: lv=root vg={{ vg_name }} size={{ root_size }}
   tags:
     - storage
 
 - name: Format root Volume
-  filesystem: "fstype={{ fstype }} dev=/dev/mapper/main-root force={{ force_format }}"
+  filesystem: "fstype={{ fstype }} dev=/dev/mapper/{{ vg_name }}-root force={{ force_format }}"
+
+- name: Format var Volume
+  filesystem: "fstype={{ fstype }} dev=/dev/mapper/{{ vg_name }}-var force={{ force_format }}"
+  when: var_size != 0
 
 - name: create root mount
   command: "{{item}} creates=/tmp/gentoo_mounted"
   with_items:
       - mkdir -p /mnt/gentoo
-      - mount /dev/mapper/main-root /mnt/gentoo 
-      - touch /tmp/gentoo_mounted 
+      - mount /dev/mapper/{{ vg_name }}-root /mnt/gentoo
+      - touch /tmp/gentoo_mounted
+  tags:
+    - storage
+
+- name: create var mount
+  command: "{{item}} creates=/tmp/gentoo_mounted"
+  with_items:
+      - mkdir -p /mnt/gentoo/var
+      - mount /dev/mapper/{{ vg_name }}-var /mnt/gentoo/var
+  when: var_size != 0
   tags:
     - storage
 
 - name: create boot mount
   command: "{{item}} creates=/tmp/boot_mounted"
-  with_items: 
-      - mkdir -p /mnt/gentoo/boot 
-      - mount {{ main_disk }}2 /mnt/gentoo/boot 
+  with_items:
+      - mkdir -p /mnt/gentoo/boot
+      - mount {{ main_disk }}2 /mnt/gentoo/boot
       - touch /tmp/boot_mounted
   tags:
     - storage
