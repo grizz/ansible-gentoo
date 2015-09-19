@@ -9,12 +9,12 @@
     - chroot
 
 - name: Copy Kernel Config
-  copy: src=kernels/{{ kernel }} dest=/mnt/gentoo/usr/src/linux/.config
+  copy: src={{ kernel }} dest=/mnt/gentoo/usr/src/linux/.config
   tags:
     - kernel
 
 - name: Make OldConfig
-  command: chroot /mnt/gentoo/ bash -c 'source /etc/profile;cd /usr/src/linux;make oldconfig'
+  command: chroot /mnt/gentoo/ bash -c 'source /etc/profile;cd /usr/src/linux;make olddefconfig'
   tags:
     - kernel
 
