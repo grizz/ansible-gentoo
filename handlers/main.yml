@@ -1,0 +1,4 @@
+
+- name: locale-gen
+  command: chroot /mnt/gentoo bash -c 'locale-gen'
+

@@ -12,11 +12,31 @@ mirror: http://distfiles.gentoo.org
 timezone: UTC
 domain: local
 kernel: kernels/config-3.13.0-24-generic
-locale: locale.gen
+locale_gen: locale.gen
 fstab: fstab
 make_conf: make.conf
 make_opts: -j4
 management_interface: "{{ ansible_default_ipv4.interface }}"
 root_passwd: gentoo-root
+reboot_when_done: False
 gateway: "{{ ansible_default_ipv4.gateway }}"
 netmask: "{{ ansible_default_ipv4.netmask }}"
+install_packages:
+  - name: eix
+    creates: /mnt/gentoo/usr/bin/eix
+  - name: syslog-ng
+    creates: /mnt/gentoo/usr/sbin/syslog-ng
+  - name: cronie
+    creates: /mnt/gentoo/etc/init.d/cronie
+  - name: grub
+    creates: /mnt/gentoo/usr/sbin/grub2-install
+  - name: iproute2
+    creates: /mnt/gentoo/bin/ip
+  - name: vim
+    creates: /mnt/gentoo/usr/bin/vim
+add_packages: []
+rm_packages: []
+add_startup:
+  - syslog-ng
+  - cronie
+

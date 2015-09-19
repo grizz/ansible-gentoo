@@ -2,16 +2,30 @@
   command: chroot /mnt/gentoo bash -c 'cp /usr/share/zoneinfo/{{ timezone }} /etc/localtime; echo "{{ timezone }}" > /etc/timezone'
   tags:
     - chroot
+    - sysconf
 
 - name: Configure Hosts File
   template: src=hosts dest=/mnt/gentoo/etc/hosts
+  tags:
+    - sysconf
 
 - name: Set Hostname
   template: src=hostname dest=/mnt/gentoo/etc/conf.d/hostname
+  tags:
+    - sysconf
 
 - name: Configure Fstab
   template: src={{ fstab }} dest=/mnt/gentoo/etc/fstab
+  tags:
+    - sysconf
 
 - name: Create Make.conf
   copy: src={{ make_conf }} dest=/mnt/gentoo/etc/portage/make.conf
+  tags:
+    - sysconf
 
+- name: Create locale.gen
+  copy: src={{ locale_gen }} dest=/mnt/gentoo/etc/locale.gen
+  notify: locale-gen
+  tags:
+    - sysconf
