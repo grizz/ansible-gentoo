@@ -1,0 +1,17 @@
+- name: set zoneinfo
+  command: chroot /mnt/gentoo bash -c 'cp /usr/share/zoneinfo/{{ timezone }} /etc/localtime; echo "{{ timezone }}" > /etc/timezone'
+  tags:
+    - chroot
+
+- name: Configure Hosts File
+  template: src=hosts dest=/mnt/gentoo/etc/hosts
+
+- name: Set Hostname
+  template: src=hostname dest=/mnt/gentoo/etc/conf.d/hostname
+
+- name: Configure Fstab
+  template: src={{ fstab }} dest=/mnt/gentoo/etc/fstab
+
+- name: Create Make.conf
+  copy: src={{ make_conf }} dest=/mnt/gentoo/etc/portage/make.conf
+

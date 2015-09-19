@@ -1,0 +1,6 @@
+{{ main_disk}}2                 /boot     ext4    noauto,noatime     1 2
+/dev/mapper/{{vg_name}}-swap    none      swap    sw                 0 0
+/dev/mapper/{{vg_name}}-root    /         {{fstype}}    noatime            0 1
+{% if var_size != 0 -%}
+/dev/mapper/{{vg_name}}-var     /var      {{fstype}}    noatime            0 1
+{%- endif %}

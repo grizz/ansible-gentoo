@@ -11,8 +11,9 @@
 - include: filesystem.yml
   when: filesystem_completed.stat.exists == False
 
+- include: sysconf.yml
 - include: kernel.yml
 - include: networking.yml
-- include: system.yml
 - include: packages.yml
+- include: system.yml
 - include: reboot.yml
