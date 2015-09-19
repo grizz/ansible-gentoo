@@ -13,4 +13,11 @@
 
 - name: Set Root Password
   command: chroot /mnt/gentoo bash -c 'source /etc/profile; echo "root:{{ root_passwd }}" | /usr/sbin/chpasswd'
+  when: root_passwd is defined
+
+- name: Set Root Password
+  command: 'bash -c "grep ^root: /etc/shadow | cut -d: -f1,2 | chroot /mnt/gentoo/ /usr/sbin/chpasswd -e"'
+  when: root_passwd is undefined
+  tags:
+    - setroot
 

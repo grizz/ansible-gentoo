@@ -17,7 +17,7 @@ fstab: fstab
 make_conf: make.conf
 make_opts: -j4
 management_interface: "{{ ansible_default_ipv4.interface }}"
-root_passwd: gentoo-root
+#root_passwd: none set uses booted system
 reboot_when_done: False
 gateway: "{{ ansible_default_ipv4.gateway }}"
 netmask: "{{ ansible_default_ipv4.netmask }}"
