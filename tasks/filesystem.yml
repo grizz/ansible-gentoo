@@ -61,9 +61,9 @@
 
 
 - name: Configure Fstab
-  copy: src=fstab dest=/mnt/gentoo/etc/fstab
+  copy: src={{ fstab }} dest=/mnt/gentoo/etc/fstab
 
 - name: Create Make.conf
-  copy: src=make.conf dest=/mnt/gentoo/etc/portage/make.conf
+  copy: src={{ make_conf }} dest=/mnt/gentoo/etc/portage/make.conf
 
 - command: touch /tmp/filesystem_completed
