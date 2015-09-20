@@ -22,6 +22,8 @@ reboot_when_done: False
 gateway: "{{ ansible_default_ipv4.gateway }}"
 netmask: "{{ ansible_default_ipv4.netmask }}"
 install_packages:
+  - name: app-portage/gentoolkit
+    creates: /usr/bin/equery
   - name: eix
     creates: /mnt/gentoo/usr/bin/eix
   - name: syslog-ng
